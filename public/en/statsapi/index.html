@@ -157,10 +157,16 @@
               <div class="doc-copy">
                 <p>Allows the retrieval of statistics from the controller, such as throughput, blockage time, starvation time or number of interventions.</p>
                 <p>Data can be requested in intervals (e.g. per hour or day). The maximum resolution is 1 minute.</p>
+                <h2 id="authentication">Authentication</h2>
+                <p>The controller uses Basic authentication.</p>
                 <p>
                   <strong>Username</strong>: mujin
                   <br>
                   <strong>Password</strong>: mujin </p>
+                <p>Posting also requires a CSRF-Token. You can either use a
+                  <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS preflight request</a> (used in browsers), or add these items to the HTTP headers:</p>
+                <p><code>Cookie: csrftoken=AValueOfYourChoice</code>
+                  <br><code>X-CSRFToken: AValueOfYourChoice</code> </p>
               </div>
               <div class="doc-examples">
                 <div class="example-section welcome-api-endpoints-section example-section-is-code">
