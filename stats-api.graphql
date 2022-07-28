@@ -1,0 +1,583 @@
+# The GraphQL subschema that is relevant for the Mujin Statistics API.
+
+type Query {
+  "Lists all or specific types of statistics entries for a given time interval."
+  ListStatEntries(
+    "The time until which statistics entries are requested. Statistics will be returned including the interval that includes this time."
+    endedAt: DateTime
+
+    """
+    The length of the intervals (i.e. the resolution) in which the statistic will be returned. One of:
+    - minute
+    - fiveMinutes
+    - hour
+    - day
+    - week
+    - month
+    - year
+    """
+    intervalType: String
+
+    "Optional list query parameters, used to filter returned results."
+    options: ListOptionsInput
+
+    "The time from which statistics entries are requested. Statistics will be returned from the interval that includes this time. For example, a request for hourly data starting from 12:30 will return hourly data starting from 12:00."
+    startedAt: DateTime
+
+    """
+    The type of statistics entries to list, defaults to list all. One of:
+    - system
+    - timeToFirstPick
+    - timeWaitedForPickContainerToArrive
+    - idleTime
+    - blockageTime
+    - numberOfPickedPartsPerOrderRequest
+    - partWeight
+    - partTransferSpeedMultiplier
+    - multiPick
+    - pickCycleExecutionStatus
+    - orderCycleFinishCode
+    - numberOfHumanInterventions
+    - systemThroughput
+    - directRobotThroughput
+    """
+    statTypes: [String!]
+  ): ListStatEntriesReturnValue!
+}
+
+
+######################################################################3
+
+
+type ListStatEntriesReturnValue {
+  "Meta information returned by the query."
+  meta: ListMeta
+
+  "A list of statistics entries."
+  statEntries: [StatEntry!]!
+}
+
+"Meta information returned by the query."
+type ListMeta {
+  """
+  Total number of entries.
+  """
+  totalCount: Int!
+}
+
+
+
+"Optional list query parameters, used to filter returned results."
+input ListOptionsInput {
+  "Filters to be applied to the result, such as 'field_subField__in=a,b,c'."
+  filters: [String!]
+
+  "Limit the returned results to first few."
+  first: Int
+
+  "Grouping to be applied to the result, such as ['field_subField', 'field2']."
+  groups: [String!]
+
+  "Offset the returned results, skip amount specified by offset."
+  offset: Int
+
+  "Ordering to be applied to the result, such as ['-field_subField', 'field2']."
+  orders: [String!]
+}
+
+type SystemMemoryStatus {
+  """
+  Number of bytes available in physical memory
+  """
+  available: DistributionMetric
+
+  """
+  Number of bytes in total physical memory
+  """
+  total: DistributionMetric
+
+  """
+  Usage percentage
+  """
+  usage: DistributionMetric
+}
+
+type SystemCPUStatus {
+  """
+  CPU temperature in celsius
+  """
+  temperature: DistributionMetric
+
+  """
+  CPU usage in percentage
+  """
+  usage: DistributionMetric
+
+  """
+  CPU usage in percentage
+  """
+  usages: [PerCoreUsage!]
+}
+
+"Usage per CPU core"
+type PerCoreUsage {
+  """
+  The mean of the collected values
+  """
+  average: Float!
+
+  """
+  Core id
+  """
+  core: Int!
+
+  """
+  The maximum value within collected values
+  """
+  maximum: Float!
+
+  """
+  The minimum value within collected values
+  """
+  minimum: Float!
+
+  """
+  The sum of the collected values
+  """
+  sum: Float!
+
+  """
+  The total number of values
+  """
+  totalCount: Float!
+
+  """
+  The sample variance of the collected values.
+  """
+  variance: Float!
+}
+
+"The `DateTime` scalar type represents a DateTime. The DateTime is serialized as an RFC 3339 quoted string"
+scalar DateTime
+
+"The base type for statistics entries that use occurrence-related metrics, e.g. the number of parts picked or the number of interventions."
+type OccurrenceMetric {
+  "The number of times the event was observed."
+  count: Float!
+}
+
+"The base type for statistics entries that use distribution-related metrics, e.g. speed, weight or execution time."
+type DistributionMetric {
+  "The mean of the collected values."
+  average: Float!
+
+  "The maximum value among the collected values."
+  maximum: Float!
+
+  "The minimum value among the collected values."
+  minimum: Float!
+
+  "The sum of the collected values."
+  sum: Float!
+
+  "The total number of values."
+  totalCount: Float!
+
+  "The sample variance of the collected values."
+  variance: Float!
+}
+
+"Number of times an order cycle finish code was received. For example: FinishedOrderComplete, FinishedNoMoreTargetsNotEmpty"
+type FinishCodeCount {
+  "The number of times the event was observed."
+  count: Float!
+
+  "Order cycle finish code. E.g. FinishedOrderComplete, FinishedNoMoreTargetsNotEmpty"
+  finishCode: String!
+}
+
+type PartStatusCount {
+  "The number of times the event was observed."
+  count: Float!
+
+  """
+  Pick cycle part status. One of:
+  
+  - success
+	- piecelost
+	- canceled
+	- torqueerror
+	- controllererror
+	- badtrajectorymerge
+	- executionerror
+	- grippererror
+	- droppedoff
+	- sourceverificationerror
+	- destverificationerror
+	- massmismatch
+	- failedRegistration
+	- failedReplanAfterRegistration
+	- registeredFailedToMove
+	- registeredGraspingModelRejection
+	- registeredInvalidRegion
+	- failedFromPrediction
+	- noNewTargetError
+	- placedInSourceForRecovery
+	- placedInSourceDueToBarcode
+	- failedFromFineDetection
+	- updatedFromFineDetectionResults
+  """
+  partStatus: String!
+}
+
+
+### ====================
+
+
+"A statistics entry that covers a certain interval in time"
+interface StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"""
+The amount of time that the system spent waiting due to downstream blockage.
+ 
+Unit: seconds
+"""
+type BlockageTimeStatEntry implements StatEntry {
+   """
+   The amount of time that the system spent waiting due to downstream blockage.
+   
+   Unit: seconds
+   """
+   blockageTime: DistributionMetric
+
+   "Timestamp when the statistics entry bin ends."
+   endedAt: DateTime!
+
+   "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+   intervalType: String!
+
+   "Timestamp when the statistics entry bin starts."
+   startedAt: DateTime!
+
+   "Type of the statistics entry."
+   statType: String!
+}
+
+
+"""
+The speed of each pick performed by the robot. 
+
+Unit: Picks/hour
+"""
+type DirectRobotThroughputStatEntry implements StatEntry {
+   """
+   The speed of each pick performed by the robot.
+   
+   Unit: Picks/hour
+   """
+   directRobotThroughput: DistributionMetric
+
+   "Timestamp when the statistics entry bin ends."
+   endedAt: DateTime!
+
+   "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+   intervalType: String!
+
+   "Timestamp when the statistics entry bin starts."
+   startedAt: DateTime!
+
+   "Type of the statistics entry."
+   statType: String!
+}
+
+
+"The amount of time that the system has spent without any order requested of it (starvation time). Unit: seconds"
+type IdleTimeStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The amount of time that the system has spent without any order requested of it (starvation time). Unit: seconds"
+  idleTime: DistributionMetric
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"Multi-pick related statistics."
+type MultiPickStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "The total number of multi-picking operations."
+  numberOfMultiPickOperations: OccurrenceMetric
+
+  "The total number of multi-picked parts."
+  numberOfMultiPickedParts: OccurrenceMetric
+
+  """
+  The number of parts picked per multi-pick operation
+  
+  Unit: Parts/multipickOperation.
+  """
+  numberOfMultiPickedPartsPerOperation: DistributionMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"Number of times that a human intervened (or had to intervene) while production cycle was running."
+type NumberOfHumanInterventionsStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Number of times that a human intervened (or had to intervene) while production cycle was running."
+  numberOfHumanInterventions: OccurrenceMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+"""
+The total number parts that were picked in a single order request. For a depalletizing system, this is the number of cases per pallet.
+ 
+Unit: part/orderRequest
+"""
+type NumberOfPickedPartsPerOrderRequestStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  """
+  The total number parts that were picked in a single order request. For a depalletizing system, this is the number of cases per pallet.
+  
+  Unit: part/orderRequest
+  """
+  numberOfPickedPartsPerOrderRequest: DistributionMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"Finish codes of completed order cycles. A finish code may be `FinishedOrderComplete` or `FinishedNoMoreTargetsNotEmpty``, for example."
+type OrderCycleFinishCodeStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "List of order cycle finish codes. E.g. FinishedOrderComplete, FinishedNoMoreTargetsNotEmpty"
+  finishCodes: [FinishCodeCount!]
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+"""
+The Transfer Speed Multiplier (TransferSpeedMult, TSM) in each execution of the order cycle.
+ 
+This adjusts the speed of the robot for safety when transferring objects that are heavy or difficult to grasp.
+"""
+type PartTransferSpeedMultiplierStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Transfer speed multiplier used in an order cycle. Unit: None"
+  partTransferSpeedMultiplier: DistributionMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+"""
+Mass of the part in each execution of the order cycle.
+ 
+Unit: kg
+"""
+type PartWeightStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  """
+  Part mass.
+  
+  Unit: kg
+  """
+  partWeight: DistributionMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"The number of each execution status that was obtained. This is the result of each pick/place motion of the robot."
+type PickCycleExecutionStatusStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "A list of pick cycle execution status codes."
+  partStatuses: [PartStatusCount!]
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+
+"System hardware related statistics."
+type SystemStatEntry implements StatEntry {
+  "System CPU utilization."
+  cpu: SystemCPUStatus
+
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "System memory utilization."
+  memory: SystemMemoryStatus
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+"""
+The rate of successfully picked parts over a period of time. This includes all waiting and idle times.
+ 
+Unit: Picks/hour
+"""
+type SystemThroughputStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  """
+  The rate of successfully picked parts over a period of time. This includes all waiting and idle times.
+  
+  Unit: Picks/hour
+  """
+  numberOfPickedParts: OccurrenceMetric
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+}
+
+"""
+The time between the order being received and the moment that the robot starts moving.
+ 
+Unit: seconds
+"""
+type TimeToFirstPickStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+
+  """
+  The time between the order being received and the moment that the robot starts moving.
+  
+  Unit: seconds
+  """
+  timeToFirstPick: DistributionMetric
+}
+
+"""
+The time the system has spent waiting for the source (pick) location to move in.
+
+Unit: seconds
+"""
+type TimeWaitedForPickContainerToArriveStatEntry implements StatEntry {
+  "Timestamp when the statistics entry bin ends."
+  endedAt: DateTime!
+
+  "The time interval (resolution) that the statistics is given in. Starting from startedAt until endedAt."
+  intervalType: String!
+
+  "Timestamp when the statistics entry bin starts."
+  startedAt: DateTime!
+
+  "Type of the statistics entry."
+  statType: String!
+
+  """
+  The time the system has spent waiting for the source (pick) location to move in.
+  
+  Unit: seconds
+  """
+  timeWaitedForPickContainerToArrive: DistributionMetric
+}
