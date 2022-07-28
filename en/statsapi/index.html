@@ -156,7 +156,11 @@
             <div id="welcome" class="doc-row">
               <div class="doc-copy">
                 <p>Allows the retrieval of statistics from the controller, such as throughput, blockage time, starvation time or number of interventions.</p>
-                <p>Data can be requested in intervals (e.g. per hour or day). The maximum resolution is 5 minutes.</p>
+                <p>Data can be requested in intervals (e.g. per hour or day). The maximum resolution is 1 minute.</p>
+                <p>
+                  <strong>Username</strong>: mujin
+                  <br>
+                  <strong>Password</strong>: mujin </p>
               </div>
               <div class="doc-examples">
                 <div class="example-section welcome-api-endpoints-section example-section-is-code">
@@ -272,7 +276,72 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                 </div>
               </div>
               <div class="doc-examples">
-                <h4 class="example-heading">Example</h4>
+                            <h4 class="example-heading">Example</h4>
+            <div class="example-section example-section-is-code operation-query-example">
+              <h5>Query</h5>
+              <html>
+              <head></head>
+              <body><pre><code class="hljs language-gql"><span class="hljs-symbol"><span class="hljs-keyword">query</span> <span class="hljs-tag">{
+  <span class="hljs-symbol">ListStatEntries<span class="hljs-tag">(
+      startedAt: <span class="hljs-code">"2022-07-27T11:00:00"</span>,
+      intervalType: <span class="hljs-code">"day"</span>,
+      statTypes: <span class="hljs-code">["numberOfHumanInterventions"]</span>
+    )</span> <span class="hljs-tag">{
+    <span class="hljs-symbol">statEntries <span class="hljs-tag">{
+      </span></span></span></span><span class="hljs-symbol">statType</span>
+      ... on <span class="hljs-symbol">NumberOfHumanInterventionsStatEntry <span class="hljs-tag">{
+        <span class="hljs-symbol">numberOfHumanInterventions</span>{
+          <span class="hljs-symbol">count</span>
+        }
+      }
+    }</span></span>
+  }</span></span>
+}</span></span>
+  </code></pre> 
+            </body>
+              </html>
+            </div>
+            <div class="example-section example-section-is-code operation-query-example">
+              <h5>Curl Request</h5>
+              <html>
+              <head></head>
+              <body><pre><code class="hljs language-gql">curl --location --request <span class="hljs-symbol">POST</span> <span class="hljs-string">'http://controller123/api/v2/graphql'</span> \
+--user <span class="hljs-string">'mujin:mujin'</span> \
+--header <span class="hljs-string">'X-CSRFToken: token'</span> \
+--header <span class="hljs-string">'Cookie: csrftoken=token'</span> \
+--header <span class="hljs-string">'Content-Type: application/json'</span> \
+--data-binary <span class="hljs-string">'{"query":"query QueryStats {\n  ListStatEntries(\n    statTypes: [\"numberOfHumanInterventions\"]\n    intervalType: \"day\"\n    startedAt: \"2022-07-27T11:00:00\"\n  ) {\n    statEntries {\n      ... on NumberOfHumanInterventionsStatEntry {\n        startedAt\n        numberOfHumanInterventions {\n          count\n        }\n      }\n    }\n  }\n}\n"}'</span> --compressed
+  </code></pre> 
+            </body>
+              </html>
+            </div>
+            <div class="example-section example-section-is-code operation-response-example">
+              <h5>Response</h5>
+              <html>
+              <head></head>
+              <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"data"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"ListStatEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">"meta"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">"statEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">"numberOfHumanInterventions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span>
+          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">"startedAt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2022-07-28T10:00:00"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">"numberOfHumanInterventions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span>
+          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span> 
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre> </body>
+              </html>
+            </div><h4 class="example-heading">Example</h4>
                 <div class="example-section example-section-is-code operation-query-example">
                   <h5>Query</h5>
                   <html>
@@ -449,7 +518,16 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                   <p>The <code>Boolean</code> scalar type represents <code>true</code> or <code>false</code>.</p>
                 </div>
               </div>
-              <div class="doc-examples"> </div>
+              <div class="doc-examples">
+                <div class="example-section example-section-is-code">
+                  <h5>Example</h5>
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json"><span class="hljs-keyword">true</span>
+</code></pre> </body>
+                  </html>
+                </div>
+              </div>
             </div>
           </section>
           <section id="definition-DirectRobotThroughputStatEntry" class="definition definition-object" data-traverse-target="definition-DirectRobotThroughputStatEntry">
@@ -833,7 +911,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                   <h5>Example</h5>
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"totalCount"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">123</span><span class="hljs-punctuation">}</span>
+                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"totalCount"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">ListMeta</span><span class="hljs-punctuation">}</span>
 </code></pre> </body>
                   </html>
                 </div>
@@ -982,8 +1060,40 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                   <h5>Example</h5>
                   <html>
                   <head></head>
-                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"meta"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"statEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">StatEntry</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">}</span>
-</code></pre> </body>
+                  <body><pre><code class="hljs language-gql"><span class="hljs-symbol"><span class="hljs-keyword">query</span> ListStatEntries<span class="hljs-tag">(
+    <span class="hljs-code">$startedAt</span>:<span class="hljs-type"> DateTime,</span>
+    <span class="hljs-code">$endedAt</span>:<span class="hljs-type"> DateTime,</span>
+    <span class="hljs-code">$intervalType</span>:<span class="hljs-type"> String,</span>
+    <span class="hljs-code">$statTypes</span>: <span class="hljs-type">[String!</span>]
+  )</span> <span class="hljs-tag">{
+    <span class="hljs-symbol">ListStatEntries<span class="hljs-tag">(
+      intervalType: <span class="hljs-code">$intervalType</span>,
+      statTypes: <span class="hljs-code">$statTypes</span>
+      startedAt: <span class="hljs-code">$startedAt</span>
+      endedAt: <span class="hljs-code">$endedAt</span>
+    )</span> <span class="hljs-tag">{
+      <span class="hljs-symbol">statEntries <span class="hljs-tag">{
+        <span class="hljs-symbol">startedAt</span>
+        <span class="hljs-symbol">endedAt</span>
+        <span class="hljs-symbol">intervalType</span>
+        <span class="hljs-symbol">statType</span>
+      }</span></span>
+      ... on <span class="hljs-symbol">SystemThroughputStatEntry <span class="hljs-tag">{
+        <span class="hljs-symbol">numberOfPickedParts</span>{
+          <span class="hljs-symbol">count</span>
+        }
+      }</span></span></span></span>
+      ... on <span class="hljs-symbol">OrderCycleFinishCodeStatEntry <span class="hljs-tag">{
+        <span class="hljs-symbol">finishCodes</span>{
+          <span class="hljs-symbol">finishCode</span>
+          <span class="hljs-symbol">count</span>
+        }
+      }</span></span>
+    }</span></span>
+  }</span></span>
+  </code>
+
+</pre> </body>
                   </html>
                 </div>
               </div>
