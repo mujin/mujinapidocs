@@ -545,8 +545,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
               <div class="doc-copy">
                 <div class="definition-description doc-copy-section">
                   <h5>Description</h5>
-                  <p>The speed of each pick performed by the robot. </p>
-                  <p>Unit: Picks/hour</p>
+                  <p>The time it took for each pick performed by the robot.</p>
                 </div>
                 <div class="definition-properties doc-copy-section">
                   <h5>Fields</h5>
@@ -565,10 +564,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                             <a href="#definition-DistributionMetric"><code>DistributionMetric</code></a>
                           </span>
                         </td>
-                        <td>
-                          <p>The speed of each pick performed by the robot.</p>
-                          <p>Unit: Picks/hour</p>
-                        </td>
+                        <td> The time it took for each pick performed by the robot. </td>
                       </tr>
                       <tr>
                         <td data-property-name="">
@@ -2249,8 +2245,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
               <div class="doc-copy">
                 <div class="definition-description doc-copy-section">
                   <h5>Description</h5>
-                  <p>The rate of successfully picked parts over a period of time. This includes all waiting and idle times.</p>
-                  <p>Unit: Picks/hour</p>
+                  <p>The number of successfully picked parts.</p>
                 </div>
                 <div class="definition-properties doc-copy-section">
                   <h5>Fields</h5>
@@ -2278,10 +2273,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                             <a href="#definition-OccurrenceMetric"><code>OccurrenceMetric</code></a>
                           </span>
                         </td>
-                        <td>
-                          <p>The rate of successfully picked parts over a period of time. This includes all waiting and idle times.</p>
-                          <p>Unit: Picks/hour</p>
-                        </td>
+                        <td> The number of successfully picked parts. </td>
                       </tr>
                       <tr>
                         <td data-property-name="">
@@ -2303,7 +2295,7 @@ Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre> </div>
                   <head></head>
                   <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfPickedParts"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">SystemThroughputStatEntry</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfPickedParts"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">OccurrenceMetric</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"systemThroughput"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre> </body>

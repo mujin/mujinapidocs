@@ -278,15 +278,11 @@ type BlockageTimeStatEntry implements StatEntry {
 
 
 """
-The speed of each pick performed by the robot. 
-
-Unit: Picks/hour
+The time it took for each pick performed by the robot.
 """
 type DirectRobotThroughputStatEntry implements StatEntry {
    """
-   The speed of each pick performed by the robot.
-   
-   Unit: Picks/hour
+   The time it took for each pick performed by the robot.
    """
    directRobotThroughput: DistributionMetric
 
@@ -505,9 +501,7 @@ type SystemStatEntry implements StatEntry {
 }
 
 """
-The rate of successfully picked parts over a period of time. This includes all waiting and idle times.
- 
-Unit: Picks/hour
+The number of successfully picked parts.
 """
 type SystemThroughputStatEntry implements StatEntry {
   "Timestamp when the statistics entry bin ends."
@@ -517,9 +511,7 @@ type SystemThroughputStatEntry implements StatEntry {
   intervalType: String!
 
   """
-  The rate of successfully picked parts over a period of time. This includes all waiting and idle times.
-  
-  Unit: Picks/hour
+  The number of successfully picked parts.
   """
   numberOfPickedParts: OccurrenceMetric
 
