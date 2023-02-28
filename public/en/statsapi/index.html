@@ -21,6 +21,13 @@
         </div>
         <nav id="nav" role="navigation">
           <div class="nav-group">
+            <h4 class="nav-group-title">Introduction</h4>
+            <ul class="nav-group-items">
+              <li><a href="#introduction">Welcome</a></li>
+              <li><a href="#introduction-item-0">About GraphQL API</a></li>
+            </ul>
+          </div>
+          <div class="nav-group">
             <h4 class="nav-group-title">Operations</h4>
             <ul class="nav-group-items">
               <li class="nav-group-section">
@@ -84,6 +91,43 @@
         </div>
         <article id="content">
           <h1 class="doc-heading">Mujin Statistics API</h1>
+          <div id="introduction" data-traverse-target="introduction">
+            <div id="welcome" class="doc-row">
+              <div class="doc-copy">
+                <p>Allows the retrieval of statistics from the controller, such as throughput, blockage time, starvation time or number of interventions.</p>
+                <p>Data can be requested in intervals (e.g. per hour or day). The maximum resolution is 1 minute.</p>
+                <h2 id="authentication">Authentication</h2>
+                <p>The controller uses Basic authentication.</p>
+                <p><strong>Username</strong>: mujin<br><strong>Password</strong>: mujin </p>
+                <p>Posting also requires a CSRF-Token. You can either use a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS preflight request</a> (used in browsers), or add these items to the HTTP headers:</p>
+                <p><code>Cookie: csrftoken=AValueOfYourChoice</code><br><code>X-CSRFToken: AValueOfYourChoice</code> </p>
+              </div>
+              <div class="doc-examples">
+                <div class="example-section welcome-api-endpoints-section example-section-is-code">
+                  <h5>API Endpoints</h5>
+                  <pre><code># Replace &#x27;controller123&#x27; with your controller&#x27;s IP:
+http://controller123/api/v2/graphql
+</code></pre>
+                </div>
+                <div class="example-section welcome-api-endpoints-section example-section-is-code">
+                  <h5>Headers</h5>
+                  <pre><code># Login via basic authorization.
+Authorization: Basic bXVqaW46bXVqaW4&#x3D;</code></pre>
+                </div>
+              </div>
+            </div>
+            <div id="introduction-item-0" class="introduction-item" data-traverse-target="introduction-item-0">
+              <h2 class="introduction-item-title">About GraphQL API</h2>
+              <div class="doc-row">
+                <div class="doc-copy">
+                  <p>The Mujin Statistics API is a <a href="https://graphql.org/learn/">GraphQL API</a>. It can also be explored interactively at <a href="http://yourcontroller/api/v2/graphql/playground">http://yourcontroller/api/v2/graphql/playground</a>.</p>
+                  <p>Note that only fields that are requested in the query are returned. It is recommended to write queries using a GraphQL-based editor or the <a href="http://yourcontroller/api/v2/graphql/playground">interactive shell</a>.</p>
+                </div>
+                <div class="doc-examples">
+                </div>
+              </div>
+            </div>
+          </div>
           <h1 id="group-Operations-Queries" class="group-heading" data-traverse-target="group-Operations-Queries">Queries</h1>
           <section id="query-ListStatEntries" class="operation operation-query" data-traverse-target="query-ListStatEntries">
             <h2 class="operation-heading ">
@@ -172,39 +216,25 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-gql"><span class="hljs-symbol"><span class="hljs-keyword">query</span> ListStatEntries<span class="hljs-tag">(
-    <span class="hljs-code">$startedAt</span>:<span class="hljs-type"> DateTime,</span>
-    <span class="hljs-code">$endedAt</span>:<span class="hljs-type"> DateTime,</span>
-    <span class="hljs-code">$intervalType</span>:<span class="hljs-type"> String,</span>
-    <span class="hljs-code">$statTypes</span>: <span class="hljs-type">[String!</span>]
+  <span class="hljs-code">$intervalType</span>:<span class="hljs-type"> String,</span>
+  <span class="hljs-code">$options</span>:<span class="hljs-type"> ListOptionsInput,</span>
+  <span class="hljs-code">$statTypes</span>: <span class="hljs-type">[String!</span>]
+)</span> <span class="hljs-tag">{
+  <span class="hljs-symbol">ListStatEntries<span class="hljs-tag">(
+    intervalType: <span class="hljs-code">$intervalType</span>,
+    options: <span class="hljs-code">$options</span>,
+    statTypes: <span class="hljs-code">$statTypes</span>
   )</span> <span class="hljs-tag">{
-    <span class="hljs-symbol">ListStatEntries<span class="hljs-tag">(
-      intervalType: <span class="hljs-code">$intervalType</span>,
-      statTypes: <span class="hljs-code">$statTypes</span>
-      startedAt: <span class="hljs-code">$startedAt</span>
-      endedAt: <span class="hljs-code">$endedAt</span>
-    )</span> <span class="hljs-tag">{
-      <span class="hljs-symbol">statEntries <span class="hljs-tag">{
-        <span class="hljs-symbol">startedAt</span>
-        <span class="hljs-symbol">endedAt</span>
-        <span class="hljs-symbol">intervalType</span>
-        <span class="hljs-symbol">statType</span>
-      }</span></span>
-      ... on <span class="hljs-symbol">SystemThroughputStatEntry <span class="hljs-tag">{
-        <span class="hljs-symbol">numberOfPickedParts</span>{
-          <span class="hljs-symbol">count</span>
-        }
-      }</span></span></span></span>
-      ... on <span class="hljs-symbol">OrderCycleFinishCodeStatEntry <span class="hljs-tag">{
-        <span class="hljs-symbol">finishCodes</span>{
-          <span class="hljs-symbol">finishCode</span>
-          <span class="hljs-symbol">count</span>
-        }
-      }</span></span>
+    <span class="hljs-symbol">meta <span class="hljs-tag">{
+      <span class="hljs-symbol">totalCount</span>
+    }</span></span>
+    <span class="hljs-symbol">statEntries <span class="hljs-tag">{
+      <span class="hljs-symbol">intervalType</span>
+      <span class="hljs-symbol">statType</span>
     }</span></span>
   }</span></span>
-  </code>
-
-</pre>
+}</span></span>
+</code></pre>
                     </body>
                   </html>
                 </div>
@@ -224,40 +254,16 @@
                 <div class="example-section example-section-is-code operation-response-example">
                   <h5>Response</h5>
                   <html>
-                  <head></head>
-                  <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+                    <head></head>
+                    <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"data"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-attr">"ListStatEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">"meta"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">"statEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-        <span class="hljs-punctuation">{</span>
-          <span class="hljs-attr">"endedAt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2022-07-28T11:00:00"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"numberOfPickedParts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-            <span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">642</span>
-          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"startedAt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2022-07-28T10:00:00"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"systemThroughput"</span>
-        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-punctuation">{</span>
-          <span class="hljs-attr">"endedAt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2022-07-28T11:00:00"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"finishCodes"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-            <span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">640</span><span class="hljs-punctuation">,</span>
-            <span class="hljs-attr">"finishCode"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"FinishedNoMoreTargets"</span>
-          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span> 
-          <span class="hljs-punctuation">{</span>
-            <span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span>
-            <span class="hljs-attr">"finishCode"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"FinishedCycleStopped"</span>
-          <span class="hljs-punctuation">}</span>
-          <span class="hljs-attr">"startedAt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2022-07-28T10:00:00"</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"orderCycleFinishCode"</span>
-        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">]</span>
+      <span class="hljs-attr">"statEntries"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">StatEntry</span><span class="hljs-punctuation">]</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
-</code>></pre>
+</code></pre>
                     </body>
                   </html>
                 </div>
@@ -308,7 +314,7 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"blockageTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"blockageTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"blockageTime"</span>
 <span class="hljs-punctuation">}</span>
@@ -390,7 +396,7 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"directRobotThroughput"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"directRobotThroughput"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"directRobotThroughput"</span>
 <span class="hljs-punctuation">}</span>
@@ -541,7 +547,7 @@
                   <h5>Example</h5>
                   <html>
                     <head></head>
-                    <body><pre><code class="hljs language-json"><span class="hljs-number">123.45</span>
+                    <body><pre><code class="hljs language-json"><span class="hljs-number">987.65</span>
 </code></pre>
                     </body>
                   </html>
@@ -595,7 +601,7 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"idleTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"idleTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"idleTime"</span>
 <span class="hljs-punctuation">}</span>
@@ -666,7 +672,7 @@
                   <h5>Example</h5>
                   <html>
                     <head></head>
-                    <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"totalCount"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">123</span><span class="hljs-punctuation">}</span>
+                    <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"totalCount"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">987</span><span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
                   </html>
@@ -849,9 +855,9 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfMultiPickOperations"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">OccurrenceMetric</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfMultiPickedParts"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">OccurrenceMetric</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfMultiPickedPartsPerOperation"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfMultiPickOperations"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"OccurrenceMetric (object)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfMultiPickedParts"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"OccurrenceMetric (object)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfMultiPickedPartsPerOperation"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"multiPick"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -897,7 +903,7 @@
                   <h5>Example</h5>
                   <html>
                     <head></head>
-                    <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">987.65</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"locationName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"xyz789"</span><span class="hljs-punctuation">}</span>
+                    <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">"count"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">123.45</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"locationName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"xyz789"</span><span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
                   </html>
@@ -955,7 +961,7 @@
   <span class="hljs-attr">"numberOfContainersPerLocations"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
     <span class="hljs-string">NumberOfContainersPerLocation</span>
   <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"xyz789"</span>
+  <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"abc123"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
@@ -1011,7 +1017,7 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfHumanInterventions"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">OccurrenceMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfHumanInterventions"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"OccurrenceMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"numberOfHumanInterventions"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -1068,7 +1074,7 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"numberOfPickedPartsPerOrderRequest"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"numberOfPickedPartsPerOrderRequest"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"numberOfPickedPartsPerOrderRequest"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -1224,7 +1230,7 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"finishCodes"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">FinishCodeCount</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"finishCodes"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"[FinishCodeCount!]"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"orderCycleFinishCode"</span>
 <span class="hljs-punctuation">}</span>
@@ -1354,7 +1360,7 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"partTransferSpeedMultiplier"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"partTransferSpeedMultiplier"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"partTransferSpeedMultiplier"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -1411,7 +1417,7 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"partWeight"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"partWeight"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"partWeight"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -1549,7 +1555,7 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"partStatuses"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">PartStatusCount</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"partStatuses"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"[PartStatusCount!]"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"pickCycleExecutionStatus"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -1605,7 +1611,7 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"abc123"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"xyz789"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"starvationTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"xyz789"</span>
 <span class="hljs-punctuation">}</span>
@@ -1778,7 +1784,7 @@
                   <h5>Example</h5>
                   <html>
                     <head></head>
-                    <body><pre><code class="hljs language-gql"><span class="hljs-symbol">"xyz789"</span>
+                    <body><pre><code class="hljs language-gql"><span class="hljs-symbol">"abc123"</span>
 </code></pre>
                     </body>
                   </html>
@@ -1829,8 +1835,8 @@
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"perCoreUsages"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">PerCoreUsage</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"temperature"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"usage"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span>
+  <span class="hljs-attr">"temperature"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"usage"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
@@ -1881,9 +1887,9 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"available"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"total"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"usage"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span>
+  <span class="hljs-attr">"available"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"total"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"usage"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
@@ -1943,9 +1949,9 @@
                   <html>
                     <head></head>
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"cpu"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">SystemCPUStatus</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"cpu"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"SystemCPUStatus (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"memory"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">SystemMemoryStatus</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"memory"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"SystemMemoryStatus (object)"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"system"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -2060,7 +2066,7 @@
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"timeToFirstPick"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"timeToFirstPick"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span>
+  <span class="hljs-attr">"timeToFirstPick"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
@@ -2117,7 +2123,7 @@
                     <body><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">"intervalType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hour"</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">"statType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"timeWaitedForPickContainerToArrive"</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">"timeWaitedForPickContainerToArrive"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">DistributionMetric</span>
+  <span class="hljs-attr">"timeWaitedForPickContainerToArrive"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"DistributionMetric (object)"</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
                     </body>
